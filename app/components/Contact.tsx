@@ -1,58 +1,128 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+function TypingDots() {
+  return (
+    <div className="flex gap-1 justify-center">
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          className="w-1.5 h-1.5 bg-white rounded-full"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{
+            duration: 1.2,
+            repeat: Infinity,
+            delay: i * 0.2,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+type Message = {
+  id: string;
+  color: 'blue' | 'green';
+};
 
 export default function Contact() {
-  const bubbles = [
-    { color: 'bg-blue-500', textColor: 'text-white', dotColor: 'bg-white', align: 'right', moveDirection: 1 },
-    { color: 'bg-blue-100 light-mode:bg-blue-200', textColor: '', dotColor: 'bg-blue-500', align: 'left', moveDirection: -1 },
-    { color: 'bg-green-500', textColor: 'text-white', dotColor: 'bg-white', align: 'right', moveDirection: 1 },
-    { color: 'bg-green-100 light-mode:bg-green-200', textColor: '', dotColor: 'bg-green-500', align: 'left', moveDirection: -1 },
-  ];
+  const [messages, setMessages] = useState<Message[]>([]);
+  const counter = useRef(1);
+  const nextColorRef = useRef<'blue' | 'green'>('green'); // Start with green
+  const router = useRouter();
+  useEffect(() => {
+    const addMessage = () => {
+      const newMsg: Message = {
+        id: `msg-${counter.current}`,
+        color: nextColorRef.current,
+      };
+      counter.current += 1;
+      // Alternate color
+      nextColorRef.current = nextColorRef.current === 'green' ? 'blue' : 'green';
+      
+      setMessages((current) => {
+        // If already have 4, remove top and add new at bottom
+        if (current.length >= 4) {
+          return [...current.slice(1), newMsg];
+        }
+        // Otherwise just add
+        return [...current, newMsg];
+      });
+    };
+
+    // First message after 500ms
+    const startTimeout = setTimeout(() => {
+      addMessage();
+      // Then every 1.5s
+      const interval = setInterval(addMessage, 1600);
+      (window as any).__msgInterval = interval;
+    }, 500);
+
+    return () => {
+      clearTimeout(startTimeout);
+      if ((window as any).__msgInterval) {
+        clearInterval((window as any).__msgInterval);
+      }
+    };
+  }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-      className="bg-gray-800/60 light-mode:bg-gray-50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-gray-700/30 light-mode:border-gray-200 backdrop-blur-sm relative overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+      onClick={() => router.push('/contact')}
+      className="bg-gray-800/60 light-mode:bg-gray-50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-gray-700/30 light-mode:border-gray-200 backdrop-blur-sm relative overflow-hidden min-h-[260px]"
     >
-      {/* Messaging bubbles - smaller */}
-      <div className="absolute top-4 right-4 space-y-1 w-20">
-        {bubbles.map((bubble, index) => (
-          <motion.div
-            key={index}
-            animate={{ 
-              x: bubble.moveDirection * 2.5
-            }}
-            transition={{ 
-              duration: 1.2,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-              delay: index * 0.15
-            }}
-            className={`${bubble.color} ${bubble.textColor} px-2 py-0.5 rounded-md ${bubble.align === 'right' ? 'rounded-tr-sm ml-auto' : 'rounded-tl-sm mr-auto'} text-xs w-fit`}
-          >
-            <div className="flex gap-0.5">
-              <div className={`w-0.5 h-0.5 ${bubble.dotColor} rounded-full`} />
-              <div className={`w-0.5 h-0.5 ${bubble.dotColor} rounded-full`} />
-              <div className={`w-0.5 h-0.5 ${bubble.dotColor} rounded-full`} />
-            </div>
-          </motion.div>
-        ))}
+      {/* Single conversation - alternating messages */}
+      <div className="absolute top-4 right-4 w-35 flex flex-col gap-3">
+        <AnimatePresence mode="popLayout">
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              layout
+              initial={{ opacity: 0, y: 30, scale: 0.5 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -30, scale: 0.8 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                layout: { type: "spring", stiffness: 200, damping: 25 }
+              }}
+              className={`flex ${message.color === 'blue' ? 'justify-start' : 'justify-end'}`}
+            >
+              <div
+                className={`${
+                  message.color === 'blue' 
+                    ? 'bg-blue-500 rounded-tl-sm' 
+                    : 'bg-green-500 rounded-tr-sm'
+                } px-3 py-1.75 rounded-2xl shadow-sm`}
+              >
+                <TypingDots />
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
-      <div className="relative z-10">
-        <div className="flex items-center gap-2.5 mb-2.5">
-          <div className="w-10 h-10 bg-gray-700/50 light-mode:bg-gray-200 rounded-lg flex items-center justify-center group-hover:bg-blue-900/30 light-mode:group-hover:bg-blue-100 transition-colors">
-            <Send className="w-5 h-5 text-gray-300 light-mode:text-gray-700" />
-          </div>
+      {/* Icon and title at BOTTOM LEFT */}
+      <div className="absolute bottom-4 left-4">
+        {/* Icon: shrinks back on hover */}
+        <div className="mb-2 origin-top-left transition-all duration-300 group-hover:scale-75">
+          <Send className="w-10 h-10 text-gray-300 light-mode:text-gray-700" strokeWidth={2} />
         </div>
         
-        <h2 className="text-base font-semibold text-white light-mode:text-gray-900 mb-1">Contact</h2>
-        <p className="text-xs text-gray-400 light-mode:text-gray-600">Email, LinkedIn, carrier pigeon...</p>
+        {/* Title + subtitle: come forward on hover */}
+        <div className="origin-bottom-left transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
+          <h2 className="text-lg font-serif font-semibold text-white light-mode:text-gray-900 mb-1">Contact</h2>
+          <p className="text-xs text-gray-400 light-mode:text-gray-600">Email, LinkedIn, carrier pigeon...</p>
+        </div>
       </div>
     </motion.div>
   );

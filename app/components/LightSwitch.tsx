@@ -1,52 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function LightSwitch() {
-  const [isPulling, setIsPulling] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [pulling, setPulling] = useState(false);
 
-  const handleClick = () => {
-    console.log('Light switch clicked!'); // Debug
-    setIsPulling(true);
-    
-    // Toggle the theme
-    document.documentElement.classList.toggle('light-mode');
-    
-    setTimeout(() => {
-      setIsPulling(false);
-    }, 500);
+  // On mount, read the saved theme (default light) and apply it
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    const dark = saved === 'dark';
+    setIsDark(dark);
+    if (dark) {
+      document.documentElement.classList.remove('light-mode');
+    } else {
+      document.documentElement.classList.add('light-mode');
+    }
+  }, []);
+
+  const toggle = () => {
+    setPulling(true);
+    setTimeout(() => setPulling(false), 400);
+
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+    if (newIsDark) {
+      document.documentElement.classList.remove('light-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.add('light-mode');
+      localStorage.setItem('theme', 'light');
+    }
   };
 
   return (
-    <div 
-      className="fixed top-0 right-24 z-50 cursor-pointer group"
-      onClick={handleClick}
-    >
+    <div className="fixed top-0 right-32 z-40 flex flex-col items-center">
       {/* Cord */}
-      <div className="w-1 h-32 bg-gradient-to-b from-gray-600 to-amber-800 mx-auto" />
-      
-      {/* Light bulb pull */}
-      <motion.div 
-        className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-xl border-2 border-amber-900 mx-auto relative group-hover:scale-110 transition-transform"
-        animate={isPulling ? {
-          y: [0, 15, 0],
-          scale: [1, 0.95, 1]
-        } : {}}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Shine effect */}
-        <div className="absolute top-2 left-2 w-4 h-4 bg-white/40 rounded-full blur-sm" />
-      </motion.div>
+      <div className="w-px h-32 bg-gradient-to-b from-gray-500 to-amber-700" />
 
-      {/* Hint text */}
-      <motion.div
-        className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-medium text-amber-500"
+      {/* Pull knob */}
+      <motion.button
+        onClick={toggle}
+        aria-label="Toggle light and dark mode"
+        className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg border-2 border-amber-800 cursor-pointer"
+        animate={pulling ? { y: [0, 24, 0] } : {}}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        whileHover={{ scale: 1.1 }}
+      />
+
+      {/* Hint */}
+      <motion.span
+        className="mt-2 text-xs text-amber-500 whitespace-nowrap"
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
         Pull me! 💡
-      </motion.div>
+      </motion.span>
     </div>
   );
 }

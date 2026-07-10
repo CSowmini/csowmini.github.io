@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
+  --background: #0a0a0a;
   --foreground: #ffffff;
 }
 
@@ -13,48 +13,46 @@ html.light-mode {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Dark mode - Pure BLACK background */
-main {
-  background: #000000 !important;
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-fraunces), serif !important;
 }
 
-/* Light mode - Pure WHITE background */
+main {
+  background: transparent !important;
+}
+
 html.light-mode main {
   background: #ffffff !important;
 }
 
-/* Dark mode card styles */
 .bg-gray-800\/60 {
-  background: rgba(45, 45, 45, 0.9) !important;
-  border-color: rgba(60, 60, 60, 0.4) !important;
+  background: #141414 !important;
+  border-color: rgba(50, 50, 50, 0.5) !important;
 }
 
-/* Light mode card styles */
 html.light-mode .bg-gray-800\/60 {
-  background: rgba(245, 245, 245, 0.9) !important;
-  border-color: rgba(220, 220, 220, 0.5) !important;
+  background: #ffffff !important;
+  border-color: rgba(230, 230, 230, 1) !important;
 }
 
-/* Text colors - dark mode */
 .text-white {
-  color: #ECECEC !important;
+  color: #ffffff !important;
 }
 
 .text-gray-300 {
-  color: #B4B4B4 !important;
+  color: #d1d1d1 !important;
 }
 
 .text-gray-400 {
-  color: #888888 !important;
+  color: #a1a1a1 !important;
 }
 
-/* Text colors - light mode */
 html.light-mode .text-white {
-  color: #1F1F1F !important;
+  color: #000000 !important;
 }
 
 html.light-mode .text-gray-300 {
@@ -65,12 +63,18 @@ html.light-mode .text-gray-400 {
   color: #606060 !important;
 }
 
-/* Icon backgrounds - dark mode */
-.bg-gray-700\/50 {
-  background: rgba(55, 55, 55, 0.6) !important;
+html.light-mode .text-gray-700 {
+  color: #000000 !important;
 }
 
-/* Icon backgrounds - light mode */
+html.light-mode .text-gray-900 {
+  color: #000000 !important;
+}
+
+.bg-gray-700\/50 {
+  background: rgba(40, 40, 40, 0.5) !important;
+}
+
 html.light-mode .bg-gray-700\/50 {
   background: rgba(230, 230, 230, 0.8) !important;
 }
@@ -80,41 +84,74 @@ html.light-mode .bg-gray-700 {
 }
 
 html.light-mode .border-gray-700\/30 {
-  border-color: rgba(200, 200, 200, 0.5) !important;
+  border-color: rgba(230, 230, 230, 0.8) !important;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
-
-/* Custom scrollbar - dark mode */
-::-webkit-scrollbar {
-  width: 10px;
+h1 {
+  font-family: "Fraunces", Georgia, serif !important;
 }
 
-::-webkit-scrollbar-track {
-  background: #000000;
+h1, h2 {
+  font-family: "Fraunces", Georgia, serif !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #404040;
-  border-radius: 5px;
+/* Force Fraunces on all card titles */
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+/* Also target the specific text-lg font-serif classes used in cards */
+.font-serif {
+  font-family: "Fraunces", Georgia, serif !important;
 }
 
-/* Custom scrollbar - light mode */
-html.light-mode ::-webkit-scrollbar-track {
-  background: #FFFFFF;
+/* Name and card titles - specific shade #222222 in light mode */
+html.light-mode h1,
+html.light-mode h2 {
+  color: #222222 !important;
 }
 
-html.light-mode ::-webkit-scrollbar-thumb {
-  background: #D0D0D0;
+/* Card titles semi-bold */
+h2 {
+  font-weight: 600 !important;
 }
 
-html.light-mode ::-webkit-scrollbar-thumb:hover {
-  background: #A0A0A0;
+/* Force #222222 on all headings in light mode - stronger selectors */
+html.light-mode h1,
+html.light-mode h2,
+html.light-mode .text-white,
+html.light-mode .text-black {
+  color: #222222 !important;
+}
+
+@keyframes draw-stroke {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes skill-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.skill-marquee-track {
+  animation: skill-scroll 35s linear infinite;
+}
+.skill-marquee-track:hover {
+  animation-play-state: paused;
+}
+.skill-marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }

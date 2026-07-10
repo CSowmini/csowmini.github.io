@@ -15,7 +15,7 @@ export default function Home() {
       <div className="max-w-[1200px] mx-auto px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left column - About and Work Experience stacked */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
             <About />
             <Experience />
           </div>
