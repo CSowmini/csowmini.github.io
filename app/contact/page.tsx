@@ -5,6 +5,8 @@ import { useEffect, useState, useRef } from 'react';
 import { Send, Linkedin, Github, Mail, Twitter, Check } from 'lucide-react';
 import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
+import Link from 'next/link';
+
 
 /* Typewriter hook — types `text` out once `start` is true */
 function useTyped(text: string, start: boolean, speed = 55) {

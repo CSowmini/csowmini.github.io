@@ -16,6 +16,7 @@ const navItems = [
 export default function SideNav() {
   const pathname = usePathname();
   const [isDark, setIsDark] = useState(true);
+  const [navHover, setNavHover] = useState(false);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -35,7 +36,15 @@ export default function SideNav() {
 
   return (
     <nav
-      className={`fixed left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rounded-2xl border shadow-sm ${
+      onMouseEnter={() => setNavHover(true)}
+      onMouseLeave={() => setNavHover(false)}
+      style={{
+        // translateY(-50%) lives here (not in a class) so it doesn't fight the scale
+        transform: `translateY(-50%) scale(${navHover ? 1.12 : 1})`,
+        transformOrigin: 'left center',
+        transition: 'transform 0.25s ease',
+      }}
+      className={`fixed left-6 top-1/2 z-40 flex flex-col gap-1 p-1.5 rounded-full border shadow-sm ${
         isDark
           ? 'bg-gray-900/80 border-gray-700/40 backdrop-blur-sm'
           : 'bg-white border-gray-200'
@@ -48,15 +57,15 @@ export default function SideNav() {
             key={href}
             href={href}
             title={label}
-            className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
               isActive
-                ? 'bg-[#5c4a3a] text-white'
+                ? 'bg-[#D4A59A] text-white'
                 : isDark
-                ? 'text-gray-300 hover:bg-gray-800'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'text-gray-300 hover:bg-[#f5e0c3] hover:text-[#5c4a3a]'
+                : 'text-gray-700 hover:bg-[#F5E3DF] hover:text-[#8A5C50]'
             }`}
           >
-            <Icon className="w-5 h-5" strokeWidth={2} />
+            <Icon className="w-[18px] h-[18px]" strokeWidth={2} />
           </Link>
         );
       })}

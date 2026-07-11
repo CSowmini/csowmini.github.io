@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
 import SkillMarquee from '../components/SkillMarquee';
+import Link from 'next/link';
+
 
 type Node = {
   text: React.ReactNode;
@@ -190,9 +192,11 @@ export default function ExperiencePage() {
 
       {/* Header */}
       <header className="pt-16 pb-4 text-center">
-        <h1 className={`text-4xl md:text-5xl font-serif ${heading}`}>
-          Chandrika Sowmini
-        </h1>
+        <Link href="/">
+          <h1 className={`text-4xl md:text-5xl font-serif cursor-pointer hover:opacity-70 transition-opacity ${heading}`}>
+            Chandrika Sowmini
+          </h1>
+        </Link>
         <p className={`mt-3 text-sm ${body}`}>Data Engineer</p>
       </header>
 

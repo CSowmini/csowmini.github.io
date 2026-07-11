@@ -9,6 +9,7 @@ import {
 import SideNav from '../components/SideNav';
 import { useRouter } from 'next/navigation';
 import LightSwitch from '../components/LightSwitch';
+import Link from 'next/link';
 
 /* ------------------------------------------------------------------ *
  *  If your layout already renders a masthead on every page, delete
@@ -201,9 +202,11 @@ export default function ProjectsPage() {
 
       {/* Header — pinned; the deck piles up under it. Identical styling to Experience. */}
       <header className="masthead">
-        <h1 className={`text-4xl md:text-5xl font-serif ${heading}`}>
-          Chandrika Sowmini
-        </h1>
+        <Link href="/">
+          <h1 className={`text-4xl md:text-5xl font-serif cursor-pointer hover:opacity-70 transition-opacity ${heading}`}>
+            Chandrika Sowmini
+          </h1>
+        </Link>
         <p className={`mt-3 text-sm ${body}`}>Data Engineer</p>
       </header>
 

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
+import Link from 'next/link';
 
 
 /* ---- Hand-drawn animated annotations ---- */
@@ -161,9 +162,11 @@ export default function AboutPage() {
 
       {/* Header - same as home */}
       <header className="pt-12 pb-10 text-center">
-        <h1 className={`text-4xl md:text-5xl font-serif ${heading}`}>
-          Chandrika Sowmini
-        </h1>
+        <Link href="/">
+          <h1 className={`text-4xl md:text-5xl font-serif cursor-pointer hover:opacity-70 transition-opacity ${heading}`}>
+            Chandrika Sowmini
+          </h1>
+        </Link>
         <p className={`mt-3 text-sm ${body}`}>Data Engineer</p>
       </header>
 
