@@ -61,7 +61,7 @@ export default function SideNav() {
               isActive
                 ? 'bg-[#D4A59A] text-white'
                 : isDark
-                ? 'text-gray-300 hover:bg-[#f5e0c3] hover:text-[#5c4a3a]'
+                ? 'text-gray-300 hover:bg-[#D4A59A]/25 hover:text-white'
                 : 'text-gray-700 hover:bg-[#F5E3DF] hover:text-[#8A5C50]'
             }`}
           >
