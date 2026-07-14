@@ -47,11 +47,10 @@ const ICONS = {
 };
 
 // sticky-stack tuning
-// STACK_STEP must be COMFORTABLY LARGER than the card's border-radius (20px),
-// otherwise the visible peek falls entirely inside the corner arc and the cards
-// read as flat wedges instead of rounded rectangles.
-const STACK_TOP = 140; // where the first card pins (just below the fixed name)
-const STACK_STEP = 32; // vertical offset per pinned card (the peek height)
+// STACK_TOP must be >= the masthead's rendered height, or the header's opaque
+// background sits on top of the first pinned card and shears its rounded corners.
+const STACK_TOP = 172; // where the first card pins (clear of the fixed name)
+const STACK_STEP = 36; // vertical offset per pinned card (the peek height)
 
 const PROJECTS: Project[] = [
   {
@@ -144,7 +143,7 @@ const PROJECTS: Project[] = [
     icon: 'dashboard',
     grad: 'linear-gradient(135deg,#0e8a9e 0%,#0a5c74 100%)',
     tag: 'Personal Project',
-    short: 'Power BI reporting dashboard for utility usage and operations.',
+    short: 'Power BI reporting for utility usage and operations.',
     about:
       'An interactive Power BI dashboard analyzing utility usage, consumption trends, and operational metrics for Oregon State. Built end-to-end from data modeling and DAX measures through published reports, giving stakeholders a self-serve view of key utility KPIs.',
     features: [
@@ -174,7 +173,7 @@ const FUN: Project[] = [
     id: 'polaroid',
     name: 'Polaroid Studio',
     icon: 'camera',
-    grad: 'linear-gradient(135deg,#e0a24d 0%,#c2703a 100%)',
+    grad: 'linear-gradient(135deg,#d4537e 0%,#993556 100%)',
     tag: 'Fun Project',
     short: 'A retro browser app that turns photos into downloadable Polaroids.',
     about:
@@ -215,7 +214,7 @@ const FUN: Project[] = [
 const ALL: Project[] = [...PROJECTS, ...FUN];
 
 const NEW_CARD = {
-  grad: 'linear-gradient(135deg,#4a63d6 0%,#2c3fae 100%)',
+  grad: 'linear-gradient(135deg,#d9a066 0%,#a8703a 100%)',
 };
 
 function InfoIcon({ type }: { type: Info['icon'] }) {
@@ -319,32 +318,33 @@ export default function ProjectsPage() {
                   </span>
                 </button>
 
-                {/* scroll room so every card can reach its pinned spot and hold */}
+                {/* scroll runway — the fun row rides up over the pinned deck,
+                    so this space carries content rather than being a dead gap */}
                 <div className="stack-spacer" aria-hidden />
-              </div>
 
-              {/* ---- fun projects: small icons, same detail view on click ---- */}
-              <section className="fun">
-                <h3 className="fun-head">For fun</h3>
-                <div className="fun-row">
-                  {FUN.map((p) => {
-                    const Icon = ICONS[p.icon];
-                    return (
-                      <button
-                        key={p.id}
-                        className="fun-item"
-                        onClick={() => setOpenId(p.id)}
-                        aria-label={p.name}
-                      >
-                        <span className="fun-tile" style={{ background: p.grad }}>
-                          <Icon size={26} strokeWidth={1.8} />
-                        </span>
-                        <span className="fun-name">{p.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
+                {/* ---- fun projects: small icons, same detail view on click ---- */}
+                <section className="fun">
+                  <h3 className="fun-head">For fun</h3>
+                  <div className="fun-row">
+                    {FUN.map((p) => {
+                      const Icon = ICONS[p.icon];
+                      return (
+                        <button
+                          key={p.id}
+                          className="fun-item"
+                          onClick={() => setOpenId(p.id)}
+                          aria-label={p.name}
+                        >
+                          <span className="fun-tile" style={{ background: p.grad }}>
+                            <Icon size={26} strokeWidth={1.8} />
+                          </span>
+                          <span className="fun-name">{p.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -475,9 +475,11 @@ export default function ProjectsPage() {
           position: sticky;
           border: none;
           text-align: left;
-          border-radius: 20px;
-          padding: 22px 28px;
-          height: 176px;
+          border-radius: 26px;
+          /* extra top padding pushes the centred content below the peek line,
+             so a buried card shows a clean colour bar and never a sliced title */
+          padding: 44px 28px 22px;
+          height: 196px;
           display: flex;
           align-items: center;
           gap: 24px;
@@ -495,9 +497,11 @@ export default function ProjectsPage() {
         .card:hover {
           transform: translateY(-2px);
         }
-        /* small visual gap between cards before they pin */
+        /* GAP between cards before they pin. Must be POSITIVE — this is the
+           initial, unscrolled view. Negative values make them overlap on load,
+           which is not what we want. Overlap comes from sticky, not margin. */
         .card + .card {
-          margin-top: 40px;
+          margin-top: 36px;
         }
         .tile {
           width: 84px;
@@ -546,21 +550,31 @@ export default function ProjectsPage() {
         .card.new .tile {
           background: rgba(255, 255, 255, 0.18);
         }
+        /* the last card has nothing below it to push it up the page, so pull it
+           into the deck by hand — more negative = more overlap */
+        .card.new {
+          margin-top: -90px;
+        }
         .connect {
           margin-top: 12px;
           font-size: 14px;
           color: #fff;
           font-weight: 600;
         }
-        /* scroll runway that lets the last card pin and hold — just enough
-           to settle, not a screenful of dead space */
+        /* THE RUNWAY. Sticky cards only stay pinned while .stack is still
+           scrolling past. Cut this too short and the stack's bottom edge shoves
+           every pinned card up under the masthead — which clips their rounded
+           tops into sharp edges. Do not shrink below ~55vh. The "For fun" row
+           lives inside .stack so this space carries content instead of air. */
         .stack-spacer {
-          height: 10vh;
+          height: 20vh;
         }
 
         /* ---- fun projects row ---- */
         .fun {
-          padding: 20px 0 80px;
+          position: relative;
+          z-index: 20; /* above the pinned deck */
+          padding: 0 0 90px;
         }
         .fun-head {
           font-family: 'Fraunces', Georgia, serif;
