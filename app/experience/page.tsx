@@ -6,6 +6,7 @@ import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
 import SkillMarquee from '../components/SkillMarquee';
 import Link from 'next/link';
+import RotatingTitle from '../components/RotatingTitle';
 
 
 type Node = {
@@ -197,7 +198,9 @@ export default function ExperiencePage() {
             Chandrika Sowmini
           </h1>
         </Link>
-        <p className={`mt-3 text-sm ${body}`}>Data Engineer</p>
+        <p className={`mt-3 text-sm ${body}`}>
+          <RotatingTitle />
+        </p>
       </header>
 
       <motion.div

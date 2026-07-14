@@ -1,12 +1,15 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState, useRef } from 'react';
-import { Send, Linkedin, Github, Mail, Twitter, Check } from 'lucide-react';
+import { useEffect, useState, useRef, useId } from 'react';
+import { Send, Linkedin, Github, Mail, Check, AlertTriangle } from 'lucide-react';
 import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
-import Link from 'next/link';
 
+/* Formspree endpoint — public by design, safe to commit */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjgnvzdo';
+
+const EMAIL = 'chandrikasowminid@gmail.com';
 
 /* Typewriter hook — types `text` out once `start` is true */
 function useTyped(text: string, start: boolean, speed = 55) {
@@ -29,48 +32,56 @@ function useTyped(text: string, start: boolean, speed = 55) {
 
 /* A single sticky-note field with reactive underline, focus packet, and valid checkmark */
 function NoteField({
+  name,
+  label,
   type = 'text',
   placeholder,
   value,
   onChange,
   multiline = false,
   validateEmail = false,
+  disabled = false,
 }: {
+  name: string;
+  label: string;
   type?: string;
   placeholder: string;
   value: string;
   onChange: (v: string) => void;
   multiline?: boolean;
   validateEmail?: boolean;
+  disabled?: boolean;
 }) {
   const [focused, setFocused] = useState(false);
+  const id = useId();
   const valid = validateEmail && value.includes('@') && value.includes('.');
 
   const shared =
-    'w-full bg-transparent outline-none py-2 text-[#3a2e22] placeholder-[#a89f6f] text-sm pr-6';
+    'w-full bg-transparent outline-none py-2 text-[#3a2e22] placeholder-[#a89f6f] text-sm pr-6 disabled:opacity-60';
+
+  const common = {
+    id,
+    name,
+    placeholder,
+    value,
+    disabled,
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      onChange(e.target.value),
+    onFocus: () => setFocused(true),
+    onBlur: () => setFocused(false),
+  };
 
   return (
     <div className="relative mb-5">
+      {/* visually hidden label — placeholders are not labels */}
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
+
       {multiline ? (
-        <textarea
-          rows={4}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className={`${shared} resize-none`}
-        />
+        <textarea rows={4} {...common} className={`${shared} resize-none`} />
       ) : (
-        <input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className={shared}
-        />
+        <input type={type} {...common} className={shared} />
       )}
 
       {/* underline: base + animated fill that draws in on focus */}
@@ -104,10 +115,13 @@ function NoteField({
   );
 }
 
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
 export default function ContactPage() {
   const [isDark, setIsDark] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', message: '', website: '' });
+  const [status, setStatus] = useState<Status>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
   const [flight, setFlight] = useState<{ path: string } | null>(null);
   const [phase, setPhase] = useState(0); // 0: terminal, 1: heading, 2: content
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -142,40 +156,84 @@ export default function ContactPage() {
   const heading = isDark ? 'text-white' : 'text-gray-900';
   const body = isDark ? 'text-gray-300' : 'text-gray-600';
 
-  const ready = form.name.trim() && form.email.includes('@') && form.message.trim();
-  const launching = flight !== null;
+  const ready = Boolean(
+    form.name.trim() && form.email.includes('@') && form.message.trim()
+  );
+  const sending = status === 'sending';
 
-  const handleSubmit = () => {
-    if (!ready || launching) return;
+  const mailtoFallback = `mailto:${EMAIL}?subject=${encodeURIComponent(
+    `Message from ${form.name}`
+  )}&body=${encodeURIComponent(
+    `${form.message}\n\nFrom: ${form.name} (${form.email})`
+  )}`;
 
-    const btn = buttonRef.current;
-    const rect = btn?.getBoundingClientRect();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ready || sending) return;
+
+    // honeypot: bots fill hidden fields, humans don't
+    if (form.website) return;
+
+    setStatus('sending');
+    setErrorMsg('');
+
+    // launch the plane immediately — animation runs while the POST is in flight
+    const rect = buttonRef.current?.getBoundingClientRect();
     const startX = rect ? rect.left + rect.width / 2 : window.innerWidth * 0.7;
     const startY = rect ? rect.top + rect.height / 2 : window.innerHeight * 0.6;
     const endX = window.innerWidth * 0.85;
     const endY = window.innerHeight * 0.2;
     const ctrlX = startX + (endX - startX) * 0.35;
     const ctrlY = endY - 140;
-    const path = `M ${startX} ${startY} Q ${ctrlX} ${ctrlY}, ${endX} ${endY}`;
-    setFlight({ path });
+    setFlight({ path: `M ${startX} ${startY} Q ${ctrlX} ${ctrlY}, ${endX} ${endY}` });
 
-    setTimeout(() => setSent(true), 700);
+    // let the plane finish its arc even if the network is instant
+    const minFlight = new Promise((r) => setTimeout(r, 1700));
 
-    setTimeout(() => {
+    try {
+      const [res] = await Promise.all([
+        fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            message: form.message,
+            _subject: `Portfolio contact — ${form.name}`,
+          }),
+        }),
+        minFlight,
+      ]);
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(
+          data?.errors?.map((x: { message: string }) => x.message).join(', ') ||
+            'Formspree rejected the submission.'
+        );
+      }
+
+      setStatus('sent');
+      setForm({ name: '', email: '', message: '', website: '' });
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong.');
+      setStatus('error');
+    } finally {
       setFlight(null);
-      const subject = encodeURIComponent(`Message from ${form.name}`);
-      const bodyText = encodeURIComponent(
-        `${form.message}\n\nFrom: ${form.name} (${form.email})`
-      );
-      window.location.href = `mailto:chandrikasowminid@gmail.com?subject=${subject}&body=${bodyText}`;
-    }, 1900);
+    }
   };
 
   const socials = [
     { icon: Linkedin, href: 'https://linkedin.com/in/chandrikasowmini-d19', label: 'LinkedIn' },
     { icon: Github, href: 'https://github.com/CSowmini', label: 'GitHub' },
-    { icon: Mail, href: 'mailto:chandrikasowminid@gmail.com', label: 'Email' },
+    { icon: Mail, href: `mailto:${EMAIL}`, label: 'Email' },
   ];
+
+  const supportsOffsetPath =
+    typeof CSS !== 'undefined' && CSS.supports?.('offset-path', "path('M0 0 L1 1')");
 
   return (
     <main className="min-h-screen transition-colors duration-500 flex items-center overflow-hidden">
@@ -196,15 +254,17 @@ export default function ContactPage() {
               }}
             />
           </svg>
-          <div
-            style={{
-              position: 'absolute',
-              offsetPath: `path('${flight.path}')`,
-              animation: 'plane-travel 1.7s ease-in-out forwards',
-            }}
-          >
-            <Send className="w-6 h-6" style={{ color: '#e0c060' }} strokeWidth={2} />
-          </div>
+          {supportsOffsetPath && (
+            <div
+              style={{
+                position: 'absolute',
+                offsetPath: `path('${flight.path}')`,
+                animation: 'plane-travel 1.7s ease-in-out forwards',
+              }}
+            >
+              <Send className="w-6 h-6" style={{ color: '#e0c060' }} strokeWidth={2} />
+            </div>
+          )}
         </div>
       )}
 
@@ -277,20 +337,19 @@ export default function ContactPage() {
                 }`}
                 style={{ fontFamily: 'var(--font-geist-mono), monospace' }}
               >
-                <p className="mb-2 text-emerald-500">&gt; cat motto.txt</p>
+                <p className="mb-2 text-emerald-500">&gt; my motto.txt</p>
                 <p className="pl-3 border-l-2 border-amber-400/50 max-w-md">
-                  If I have the belief that I can do it, I shall surely
-                  acquire the capacity to do it, even if I may not have it at the
-                  beginning! Thanks for Connectiong...
-                  <br />
+                  If I have the belief that I can do it, I shall surely acquire the
+                  capacity to do it, even if I may not have it at the beginning!
+                </p>
+                <p className="pl-3 mt-2 text-amber-500/80">
+                  Thanks for connecting.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right column - sticky note form */}
-
-          {/* Right column - sticky note form */}
+          {/* Right column — sticky note form */}
           <div
             className={`flex justify-center transition-all duration-700 ${
               phase >= 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
@@ -351,55 +410,91 @@ export default function ContactPage() {
                 </svg>
 
                 <AnimatePresence mode="wait">
-                  {!sent ? (
-                    <motion.div
+                  {status !== 'sent' ? (
+                    <motion.form
                       key="form"
+                      onSubmit={handleSubmit}
                       exit={{ opacity: 0 }}
-                      className={
-                        launching ? 'opacity-40 transition-opacity duration-500' : ''
-                      }
+                      className={sending ? 'opacity-40 transition-opacity duration-500' : ''}
                     >
                       <p className="text-[#5c4a3a] text-sm mb-5 font-bold">
                         📌 Leave me a note
                       </p>
 
                       <NoteField
+                        name="name"
+                        label="Your name"
                         placeholder="your name"
                         value={form.name}
                         onChange={(v) => setForm({ ...form, name: v })}
+                        disabled={sending}
                       />
                       <NoteField
+                        name="email"
+                        label="Your email"
                         type="email"
                         placeholder="your email"
                         value={form.email}
                         onChange={(v) => setForm({ ...form, email: v })}
                         validateEmail
+                        disabled={sending}
                       />
                       <NoteField
+                        name="message"
+                        label="Your message"
                         placeholder="what's on your mind?"
                         value={form.message}
                         onChange={(v) => setForm({ ...form, message: v })}
                         multiline
+                        disabled={sending}
                       />
+
+                      {/* honeypot — hidden from humans, catnip for bots */}
+                      <input
+                        type="text"
+                        name="website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        aria-hidden="true"
+                        value={form.website}
+                        onChange={(e) => setForm({ ...form, website: e.target.value })}
+                        className="absolute left-[-9999px] opacity-0 h-0 w-0"
+                      />
+
+                      {status === 'error' && (
+                        <div
+                          role="alert"
+                          className="mb-4 flex items-start gap-2 text-[12px] text-red-700"
+                        >
+                          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
+                          <span>
+                            {errorMsg || "Couldn't send that."}{' '}
+                            <a href={mailtoFallback} className="underline font-semibold">
+                              Email me directly
+                            </a>
+                            .
+                          </span>
+                        </div>
+                      )}
 
                       <button
                         ref={buttonRef}
-                        onClick={handleSubmit}
-                        disabled={!ready || launching}
+                        type="submit"
+                        disabled={!ready || sending}
                         className={`w-full py-3 rounded flex items-center justify-center gap-2 transition-all ${
-                          ready
+                          ready && !sending
                             ? 'bg-[#5c4a3a] hover:bg-[#4a3a2a] cursor-pointer button-wake'
                             : 'bg-[#c9c088] cursor-not-allowed'
                         }`}
                       >
                         <span
                           className={`text-sm font-bold ${
-                            ready ? 'text-white' : 'text-[#8a825a]'
+                            ready && !sending ? 'text-white' : 'text-[#8a825a]'
                           }`}
                         >
-                          {launching ? 'sending…' : 'send it'}
+                          {sending ? 'sending…' : status === 'error' ? 'try again' : 'send it'}
                         </span>
-                        {!launching && (
+                        {!sending && (
                           <Send
                             className="w-4 h-4"
                             style={{ color: ready ? '#ffffff' : '#8a825a' }}
@@ -407,7 +502,7 @@ export default function ContactPage() {
                           />
                         )}
                       </button>
-                    </motion.div>
+                    </motion.form>
                   ) : (
                     <motion.div
                       key="sent"
@@ -420,6 +515,12 @@ export default function ContactPage() {
                       <p className="text-[#8a7a5a] text-xs mt-2">
                         I&apos;ll get back to you soon.
                       </p>
+                      <button
+                        onClick={() => setStatus('idle')}
+                        className="mt-5 text-[11px] text-[#8a7a5a] underline hover:text-[#5c4a3a]"
+                      >
+                        send another
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import RotatingTitle from '../components/RotatingTitle';
 
 function TypingDots() {
   return (

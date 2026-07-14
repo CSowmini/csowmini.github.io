@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import SideNav from '../components/SideNav';
 import LightSwitch from '../components/LightSwitch';
 import Link from 'next/link';
-
+import RotatingTitle from '../components/RotatingTitle';
 
 /* ---- Hand-drawn animated annotations ---- */
 /* Drawn via native SVG pathLength + CSS keyframes — reload-proof */
@@ -167,7 +167,9 @@ export default function AboutPage() {
             Chandrika Sowmini
           </h1>
         </Link>
-        <p className={`mt-3 text-sm ${body}`}>Data Engineer</p>
+        <p className={`mt-3 text-sm ${body}`}>
+          <RotatingTitle />
+        </p>
       </header>
 
       <motion.div

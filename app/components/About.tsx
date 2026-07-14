@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
+
 export default function About() {
   const [isDark, setIsDark] = useState(false);
   const router = useRouter();

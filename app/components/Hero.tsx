@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import RotatingTitle from './RotatingTitle';
 
 export default function Hero() {
   return (
@@ -19,8 +20,12 @@ export default function Hero() {
             >
               Chandrika Sowmini
             </h1>
-           <p style={{ fontFamily: '"Fraunces", Georgia, serif', fontWeight: 300 }}className="text-base text-white light-mode:text-black transition-colors">
-            Data Engineer</p>
+           <p
+              style={{ fontFamily: '"Fraunces", Georgia, serif', fontWeight: 300, minHeight: '1.5em' }}
+              className="text-base text-white light-mode:text-black transition-colors"
+            >
+              <RotatingTitle />
+            </p>
           </motion.div>
         </div>
       </section>
