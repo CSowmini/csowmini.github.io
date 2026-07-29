@@ -183,7 +183,7 @@ export default function AboutPage() {
 
         <div className={`space-y-3 leading-normal text-[15px] ${body}`} style={{ fontFamily: 'var(--font-geist-mono), monospace' }}>
           <p>
-            I am a Data Engineer with a passion for turning complex data into{' '}
+            I am a Full Stack Data Engineer with a passion for turning complex data into{' '}
             <Underlined delay={1.0}>actionable insights</Underlined> that drive real
             business decisions.
           </p>

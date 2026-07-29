@@ -69,7 +69,7 @@ const PROJECTS: Project[] = [
       'Containerized on EC2 with Docker',
     ],
     info: [
-      { icon: 'link', label: 'github.com', href: '#' },
+      { icon: 'link', label: 'github.com', href: 'https://github.com/CSowmini' },
       { icon: 'cal', label: '2024' },
     ],
     tech: [
@@ -125,7 +125,7 @@ const PROJECTS: Project[] = [
       'RMSE reduced by 22%',
     ],
     info: [
-      { icon: 'link', label: 'github.com', href: '#' },
+      { icon: 'link', label: 'github.com', href: 'https://github.com/CSowmini' },
       { icon: 'cal', label: '2023' },
     ],
     tech: [
@@ -153,7 +153,7 @@ const PROJECTS: Project[] = [
       'Scheduled refresh for up-to-date data',
     ],
     info: [
-      { icon: 'link', label: 'github.com', href: '#' },
+      { icon: 'link', label: 'Tableau Dashboard', href: 'https://public.tableau.com/app/profile/chandrika.sowmini.sowmini/viz/FinalProject_17020125978100/Dashboard1' },
       { icon: 'cal', label: '2023' },
     ],
     tech: [
