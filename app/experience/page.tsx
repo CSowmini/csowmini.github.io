@@ -31,36 +31,50 @@ const roles: Role[] = [
     logoLight: '/delineate-light.png',
     logoDark: '/delineate-dark.png',
     logoWidth: 'w-32',
-    title: 'Data Engineer',
+    title: 'Software Engineer (Backend / Distributed Systems)',
     nodes: [
       {
         text: (
           <>
-            <b>Pacers Sports &amp; Entertainment</b> — turned 8 messy data sources
-            into one governed analytics platform, and shipped a production AI agent
-            that answers business questions in plain English across 5 domains.
+            <b>Pacers Sports &amp; Entertainment</b> — led a Java event-processing
+            service that unifies ticketing, commerce, and mobile activity from 8
+            systems (100K+ events a day). Bounded queues, thread pools, and
+            idempotent writes absorb spikes and retries, and nightly reconciliation
+            discrepancies dropped <b>~80–85%</b>.
           </>
         ),
-        flow: ['Raw Systems', 'Silver Tables', 'Gold Layer', 'Dashboards / AI Agent'],
+        flow: ['8 Source Systems', 'Bounded Queues', 'Thread Pool Workers', 'Idempotent Writes', 'Unified Events'],
       },
       {
         text: (
           <>
-            <b>Indiana Dept. of Health</b> — built a HIPAA-compliant public-health
-            platform crunching 500K+ records a day, and made it 56% faster while
-            state officials watched the dashboards.
+            Also built Python REST APIs that answer plain-English questions across
+            5 business domains, with MLflow evaluations checking the quality of
+            every response.
           </>
         ),
-        flow: ['Public Health Sources', 'ADF', 'Databricks', 'Delta Tables', 'Power BI'],
+        flow: ['NL Query', 'REST API', 'Validation', 'Service Routing', 'Evaluated Answer'],
       },
       {
         text: (
           <>
-            <b>MISO</b> — lifted 30+ ancient Oracle pipelines into the cloud without
-            losing a single row, then cut runtime in half.
+            <b>Indiana Dept. of Health</b> — hardened Python services processing
+            500K+ health records a day. Retries, circuit breakers, and dead-letter
+            queue recovery took production failures from <b>~3% to ~0.3%</b>, and
+            alerts now catch issues in under 5 minutes.
           </>
         ),
-        flow: ['Oracle Pipelines', 'Cloud Migration', 'Optimized ETL', 'Faster Runtime'],
+        flow: ['Health Feeds', 'Python Services', 'Retry + Circuit Breaker', 'DLQ Recovery', '~0.3% Failures'],
+      },
+      {
+        text: (
+          <>
+            <b>MISO</b> — modernized 30+ Oracle-backed components to Azure in five
+            phased migrations, with p95 latency rollback gates on every cutover.
+            <b> ~70%</b> less break/fix work and <b>~40%</b> faster releases.
+          </>
+        ),
+        flow: ['Oracle Components', 'Phased Migration', 'CI/CD + Rollback Gates', 'Azure Services'],
       },
     ],
   },
@@ -70,30 +84,32 @@ const roles: Role[] = [
     logoLight: '/deloitte-light.png',
     logoDark: '/deloitte-dark.png',
     logoWidth: 'w-32',
-    title: 'Data Engineer',
+    title: 'Software Engineer',
     nodes: [
       {
         text: (
           <>
-            Owned the financial pipelines behind 50M+ daily records across 40+
-            business units — the numbers the C-suite actually trusted.
+            Shipped an employee lifecycle app for <b>5,000 users</b> — React
+            workflows on Java/Spring Boot REST APIs and SQL Server, holding up to
+            400 concurrent sessions.
           </>
         ),
-        flow: ['CRM / ERP / Txns', 'Databricks ETL', 'Gold Layer', 'P&L Dashboards'],
+        flow: ['React UI', 'Spring Boot APIs', 'Business Logic', 'SQL Server'],
       },
       {
         text: (
           <>
-            Took monthly reporting from <b>hours down to 15 minutes</b> and won 1st
-            place at the FY’21 Hackathon out of 50+ teams.
+            Made a race-prone C#/.NET cache thread-safe, and cut latency <b>~30%</b>{' '}
+            on Python/SQL services processing 50M+ financial records a day.
           </>
         ),
       },
       {
         text: (
           <>
-            Along the way, picked up multiple <b>awards</b> — Rockstar Rookie, Spot
-            Award, Applause, and more. 🥇
+            Won 1st place at the FY’21 Hackathon out of 50+ teams, mentored 2
+            junior engineers, and picked up a few <b>awards</b> along the way —
+            Rockstar Rookie, Spot Award, Applause. 🥇
           </>
         ),
       },
@@ -217,11 +233,11 @@ export default function ExperiencePage() {
               <span className={heading}>git log --oneline</span>
             </p>
             <p className={`text-[13px] mt-2 ${body}`}>
-              <span className="text-amber-500">*</span> 5 years, 2 companies, 4 clients — every commit shipped to prod.
+              <span className="text-amber-500">*</span> 4+ years, 2 companies, 3 clients — every commit shipped to prod.
             </p>
           </div>
 
-          {/* pipeline toggle */}
+          {/* architecture toggle */}
           <button
             onClick={() => setShowMeta((v) => !v)}
             className="text-[12px] transition-colors shrink-0 mt-1"
@@ -230,7 +246,7 @@ export default function ExperiencePage() {
               color: showMeta ? '#22c55e' : isDark ? '#888' : '#999',
             }}
           >
-            {showMeta ? '[hide_pipeline]' : '[view_pipeline]'}
+            {showMeta ? '[hide_architecture]' : '[view_architecture]'}
           </button>
         </div>
 
