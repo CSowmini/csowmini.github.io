@@ -54,7 +54,7 @@ export default function Experience() {
         {/* Title + subtitle: come forward on hover */}
         <div className="origin-bottom-left transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1">
           <h2 className="text-lg font-serif text-white light-mode:text-gray-400 mb-1">Work Experience</h2>
-          <p className="text-xs text-gray-400 light-mode:text-gray-600">My career as a Data Professional.</p>
+          <p className="text-xs text-gray-400 light-mode:text-gray-600">My career as a Software Professional.</p>
         </div>
       </div>
     </motion.div>
