@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 
 const skills = [
-  'Python', 'SQL', 'PySpark', 'Databricks', 'Azure', 'Delta Lake',
-  'Airflow', 'Kafka', 'Snowflake', 'ADF', 'Azure Synapse', 'Power BI',
-  'Tableau', 'Spark', 'Azure Purview', 'MLflow', 'Unity Catalog'
+  'Java', 'Python', 'SQL', 'Spring Boot', 'REST APIs', 'Apache Spark',
+  'PySpark', 'C#', '.NET', 'React', 'TypeScript', 'Multithreading',
+  'Event Processing', 'SQL Server', 'Oracle', 'Azure', 'Azure DevOps',
+  'CI/CD', 'Git', 'MLflow'
 ];
 
 export default function SkillMarquee() {

@@ -215,19 +215,19 @@ export default function ChatBot() {
       return `I'd love to hear from you! Here's how to reach me:\n\n📧 [${EMAIL}](mailto:${EMAIL})\n💼 [Connect on LinkedIn](${LINKEDIN})\n📄 [Visit my contact page](/contact)`;
     }
     if (q.includes('who') || q.includes('chandrika')) {
-      return "I'm Chandrika Sowmini, a Data Engineer based in Texas. I hold an MS in Data Science from Indiana University and specialize in building data platforms, ETL pipelines, and analytics that teams actually act on.\n\nI can tell you more about my background, my projects, or my work experience — just let me know where you'd like to start.";
+      return "I'm Chandrika Sowmini, a backend-focused Software Engineer based in Texas. I build Java, Python, and Spark services for data-intensive systems — REST APIs, event processing, and the reliability work that keeps them running in production. I hold an MS in Data Science from Indiana University.\n\nI can tell you more about my background, my projects, or my work experience — just let me know where you'd like to start.";
     }
     if (q.includes('experience') || q.includes('work')) {
-      return 'I have 4+ years of experience and currently build data solutions at Delineate. Along the way I have worked with Pacers Sports & Entertainment, the Indiana Department of Health, MISO, and Deloitte.';
+      return "I have 4+ years of experience. At Delineate, I build backend and distributed systems for clients like Pacers Sports & Entertainment (a Java event-processing service handling 100K+ events a day), the Indiana Department of Health (cut production failures from ~3% to ~0.3%), and MISO (moved 30+ Oracle components to Azure).\n\nBefore that, I was a Software Engineer at Deloitte, where I built a React and Spring Boot app used by 5,000 people.\n\n[See my full experience](/experience)";
     }
     if (q.includes('project')) {
       return 'My projects include a Spotify streaming analytics pipeline (Kafka, Kinesis, Snowflake), AI-HireVue — a real-time GenAI candidate evaluation tool that won 1st place at the Deloitte hackathon — a flight price forecasting engine, and an Oregon State utility Power BI dashboard.\n\n[See all my projects](/projects)';
     }
-    if (q.includes('tool') || q.includes('skill') || q.includes('stack')) {
-      return 'I work with Python, SQL, and R, plus Azure and Databricks for cloud and big data. For visualization I use Tableau and Power BI, and I build ETL pipelines with PySpark and Delta Lake.';
+    if (q.includes('tool') || q.includes('skill') || q.includes('stack') || q.includes('language')) {
+      return 'My main languages are Java, Python, and SQL, plus C#/.NET and TypeScript. I build with Spring Boot, React, and Apache Spark, deploy on Azure with Azure DevOps CI/CD, and work with SQL Server and Oracle databases.';
     }
-    if (q.includes('special')) {
-      return 'My specialties include data platform architecture, ETL/ELT pipelines, dimensional modeling, statistical analysis, and dashboard development — with recent work in LLM-powered and agentic analytics.';
+    if (q.includes('special') || q.includes('reliab') || q.includes('backend')) {
+      return 'My specialties are backend and distributed systems: REST APIs, event processing, multithreading and concurrency, and reliability patterns like idempotency, retries, circuit breakers, and dead-letter queue recovery. I also do the operational side — monitoring, alerting, on-call support, and incident response.';
     }
     if (q.includes('education') || q.includes('school') || q.includes('degree') || q.includes('stud')) {
       return 'I hold an MS in Data Science from Indiana University Bloomington with a 3.87 GPA. My coursework covered data mining, machine learning, statistical methods, applied algorithms, and distributed systems.';
@@ -288,7 +288,7 @@ export default function ChatBot() {
                   </h1>
                 </Link>
                 <p className={`mt-3 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Data Engineer
+                  <RotatingTitle />
                 </p>
               </div>
             </div>

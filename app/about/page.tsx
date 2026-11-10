@@ -183,24 +183,26 @@ export default function AboutPage() {
 
         <div className={`space-y-3 leading-normal text-[15px] ${body}`} style={{ fontFamily: 'var(--font-geist-mono), monospace' }}>
           <p>
-            I am a Full Stack Data Engineer with a passion for turning complex data into{' '}
-            <Underlined delay={1.0}>actionable insights</Underlined> that drive real
-            business decisions.
+            I am a backend-focused Software Engineer who builds{' '}
+            <Underlined delay={1.0}>reliable, scalable systems</Underlined> in Java,
+            Python, and Spark for data-intensive businesses.
           </p>
 
           <p>
             I hold an MS in Data Science from Indiana University. Along the
             way I&apos;ve worked with Pacers Sports &amp; Entertainment, the
             Indiana Department of Health, MISO, and Deloitte — and today I
-            build <Circled delay={2.3}>data solutions</Circled> at Delineate, backed by{' '}
-            <Highlighted delay={3.5}>4+ years of experience</Highlighted>. I don&apos;t
-            just crunch numbers, I ship insights that people act on.
+            build <Circled delay={2.3}>backend services</Circled> at Delineate, backed by{' '}
+            <Highlighted delay={3.5}>4+ years of experience</Highlighted>. I take
+            features from design through testing, production rollout, and on-call
+            support, and I care about the parts that keep them running: retries,
+            monitoring, and code that&apos;s easy to maintain.
           </p>
 
           <p>
-            When I&apos;m not building pipelines or dashboards, you&apos;ll
-            find me exploring new places, experimenting in the kitchen, and
-            enjoying a good series.
+            When I&apos;m not building APIs or chasing down a production bug,
+            you&apos;ll find me exploring new places, experimenting in the
+            kitchen, and enjoying a good series.
           </p>
         </div>
 
@@ -219,12 +221,13 @@ export default function AboutPage() {
           Tech Stack
         </h2>
         <ul className={`space-y-1 list-disc list-inside marker:text-gray-400 text-[15px] pl-6 ${body}`} style={{ fontFamily: 'var(--font-geist-mono), monospace' }}>
-          <li>Core Languages: Python, SQL, R</li>
-          <li>Cloud &amp; Big Data: Azure, Databricks</li>
-          <li>Data Engineering: ETL Pipelines, Data Modeling</li>
-          <li>Visualization: Tableau, Power BI</li>
-          <li>ML &amp; Stats: scikit-learn, Predictive Analytics, Statistical Modeling</li>
-          <li>Currently Exploring: dbt, Snowflake, LLM-powered analytics</li>
+          <li>Languages: Java, Python, SQL, C#, TypeScript</li>
+          <li>Frameworks: Spring Boot, .NET, React, PySpark</li>
+          <li>Backend &amp; Distributed Systems: REST APIs, Multithreading, Event Processing, Apache Spark</li>
+          <li>Reliability: Idempotency, Retries, DLQ Recovery, Caching</li>
+          <li>Engineering: Object-Oriented Design, Unit &amp; Integration Testing, CI/CD, Git</li>
+          <li>Operations: Monitoring, Alerting, On-Call Support, Incident Response</li>
+          <li>Cloud &amp; Data: Azure, Azure DevOps, SQL Server, Oracle</li>
         </ul>
       </motion.div>
     </main>

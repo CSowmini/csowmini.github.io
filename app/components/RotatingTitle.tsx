@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TITLES = [
-  'Data Engineer',
-  'Analytics Engineer',
-  'AI Engineer',
-  'Business Intelligence Engineer',
+  'Software Engineer',
+  'Backend Engineer',
+  'Software Data Engineer',
+  'Python Developer',
 ];
 
 export default function RotatingTitle() {
