@@ -296,7 +296,7 @@ export default function ContactPage() {
               }`}
             >
               <h2 className={`mt-6 text-xl font-semibold leading-snug ${heading}`}>
-                Got a flaky service, an API that times out,
+                Got a messy pipeline, a dashboard that lies,
                 <br />
                 or a role with my name on it?
               </h2>
@@ -307,7 +307,7 @@ export default function ContactPage() {
                 } text-[15px] leading-relaxed ${body}`}
                 style={{ fontFamily: 'var(--font-geist-mono), monospace' }}
               >
-                I build backend systems that stay up when traffic spikes.
+                I turn scattered data into decisions people actually trust.
                 Tell me what you&apos;re building — I reply fast, and I don&apos;t ghost.
               </blockquote>
 
